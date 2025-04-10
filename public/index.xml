@@ -1,9 +1,406 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
-        <title>My New Hugo Site</title>
+        <title>OnClickListener2048 Study Notes</title>
         <link>http://localhost:1313/</link>
-        <description>This is my cool site111</description>
-        <generator>Hugo -- gohugo.io</generator><language>en-us</language>
+        <description>I learn Android,Flutter,React,Java,Python and so on. I will share my study notes here.</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Thu, 10 Apr 2025 23:36:35 &#43;0800</lastBuildDate>
             <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
-        </channel>
+        <item>
+    <title>Kotlin Flow 快速入门</title>
+    <link>http://localhost:1313/posts/my-first-post/</link>
+    <pubDate>Thu, 10 Apr 2025 23:36:35 &#43;0800</pubDate>
+    <author>Author</author>
+    <guid>http://localhost:1313/posts/my-first-post/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/flow.webp" referrerpolicy="no-referrer">
+            </div><div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-markdown">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gh"># Kotlin Flow 快速入门
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span>
+</span></span><span class="line"><span class="cl">Kotlin Flow 是 Kotlin 协程库提供的一种用于处理**异步数据流**的类型。如果你熟悉 RxJava/RxKotlin，你会发现 Flow 的概念与之类似，但它基于 Kotlin 协程构建，提供了更简洁、更符合语言习惯的 API，并能更好地与结构化并发集成。
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">可以将 Flow 想象成一个异步版本的 <span class="sb">`Sequence`</span> 或 <span class="sb">`Iterator`</span>。它按需生产（emit）一系列值，而消费者（collector）则异步地处理这些值。
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 为什么需要 Flow？
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl">在现代应用程序开发中，处理异步事件流非常常见：
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">1.</span>  <span class="gs">**用户界面事件**</span>：按钮点击、文本输入变化等。
+</span></span><span class="line"><span class="cl"><span class="k">2.</span>  <span class="gs">**网络请求**</span>：获取可能分块或随时间更新的数据。
+</span></span><span class="line"><span class="cl"><span class="k">3.</span>  <span class="gs">**数据库访问**</span>：监听数据库变化并获取更新。
+</span></span><span class="line"><span class="cl"><span class="k">4.</span>  <span class="gs">**传感器数据**</span>：连续接收设备传感器读数。
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Flow 提供了一种统一的方式来处理这些场景，具有以下优点：
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">*</span>   <span class="gs">**基于协程**</span>：天然支持挂起函数，与 Kotlin 的异步模型无缝集成。
+</span></span><span class="line"><span class="cl"><span class="k">*</span>   <span class="gs">**结构化并发**</span>：Flow 的生命周期通常与启动它的协程作用域绑定，易于管理和取消。
+</span></span><span class="line"><span class="cl"><span class="k">*</span>   <span class="gs">**冷流 (Cold Streams)**</span>：默认情况下，Flow 是冷的。意味着只有当有消费者开始收集（collect）时，生产者代码才会执行。每个新的收集者都会触发一次新的执行。
+</span></span><span class="line"><span class="cl"><span class="k">*</span>   <span class="gs">**丰富的操作符**</span>：提供了大量类似于 RxJava 的操作符（如 <span class="sb">`map`</span>, <span class="sb">`filter`</span>, <span class="sb">`zip`</span>, <span class="sb">`flatMapConcat`</span> 等）用于转换和组合流。
+</span></span><span class="line"><span class="cl"><span class="k">*</span>   <span class="gs">**背压支持**</span>：Flow 通过协程的挂起机制天然支持背压，生产者不会压垮消费者。
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## Flow 的核心概念
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl"><span class="k">1.</span>  <span class="gs">**Flow&lt;T&gt;**</span>：表示一个异步数据流的接口，它能按顺序发出 (emit) 类型为 <span class="sb">`T`</span> 的零个或多个值。
+</span></span><span class="line"><span class="cl"><span class="k">2.</span>  <span class="gs">**生产者 (Producer)**</span>：负责**生产**或**发出**数据的代码块。通常使用 <span class="sb">`flow { ... }`</span> 构建器创建。
+</span></span><span class="line"><span class="cl"><span class="k">3.</span>  <span class="gs">**消费者 (Collector)**</span>：负责**接收**和**处理**数据的代码块。通过调用**末端操作符**（如 <span class="sb">`collect`</span>）来触发 Flow 的执行。
+</span></span><span class="line"><span class="cl"><span class="k">4.</span>  <span class="gs">**中间操作符 (Intermediate Operators)**</span>：如 <span class="sb">`map`</span>, <span class="sb">`filter`</span>, <span class="sb">`onEach`</span> 等。它们应用于上游 Flow 并返回一个新的下游 Flow。这些操作符本身**不会**触发 Flow 的执行，它们是**惰性**的。
+</span></span><span class="line"><span class="cl"><span class="k">5.</span>  <span class="gs">**末端操作符 (Terminal Operators)**</span>：如 <span class="sb">`collect`</span>, <span class="sb">`toList`</span>, <span class="sb">`first`</span>, <span class="sb">`single`</span>, <span class="sb">`reduce`</span>, <span class="sb">`fold`</span> 等。它们是**挂起函数**，会启动 Flow 的收集过程，并等待其完成。
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 创建 Flow
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>
+</span></span><span class="line"><span class="cl">有多种方式可以创建 Flow：
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gs">**1. 使用 `flow { ... }` 构建器 (最常用)**</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">这是最灵活的方式，你可以在 <span class="sb">`flow`</span> 代码块中使用 <span class="sb">`emit()`</span> 函数来发出值。<span class="sb">`emit`</span> 本身不是挂起函数，但 <span class="sb">`collect`</span> 是挂起的。<span class="sb">`flow`</span> 代码块内的代码直到被收集时才会执行。
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">```kotlin
+</span></span><span class="line"><span class="cl">import kotlinx.coroutines.delay
+</span></span><span class="line"><span class="cl">import kotlinx.coroutines.flow.Flow
+</span></span><span class="line"><span class="cl">import kotlinx.coroutines.flow.flow
+</span></span><span class="line"><span class="cl">import kotlinx.coroutines.runBlocking
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 模拟一个每 100ms 发出一个数字的 Flow
+</span></span><span class="line"><span class="cl">fun simpleFlow(): Flow<span class="p">&lt;</span><span class="nt">Int</span><span class="p">&gt;</span> = flow {
+</span></span><span class="line"><span class="cl">    println(&#34;Flow started&#34;)
+</span></span><span class="line"><span class="cl">    for (i in 1..3) {
+</span></span><span class="line"><span class="cl">        delay(100) // 模拟耗时操作
+</span></span><span class="line"><span class="cl">        println(&#34;Emitting $i&#34;)
+</span></span><span class="line"><span class="cl">        emit(i) // 发出值
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">fun main() = runBlocking {
+</span></span><span class="line"><span class="cl">    println(&#34;Calling simpleFlow()...&#34;)
+</span></span><span class="line"><span class="cl">    val flow = simpleFlow()
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    println(&#34;Calling collect...&#34;)
+</span></span><span class="line"><span class="cl">    flow.collect { value -&gt;
+</span></span><span class="line"><span class="cl">        println(&#34;Collected $value&#34;)
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">    println(&#34;Collect finished.&#34;)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    // 注意：如果再次 collect，Flow 会重新执行
+</span></span><span class="line"><span class="cl">    println(&#34;\nCalling collect again...&#34;)
+</span></span><span class="line"><span class="cl">    flow.collect { value -&gt;
+</span></span><span class="line"><span class="cl">        println(&#34;Collected again $value&#34;)
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">    println(&#34;Second collect finished.&#34;)
+</span></span><span class="line"><span class="cl">}</span></span></code></pre></div></div>
+<p><strong>输出:</strong></p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><pre tabindex="0"><code>Calling simpleFlow()...
+Calling collect...
+Flow started
+Emitting 1
+Collected 1
+Emitting 2
+Collected 2
+Emitting 3
+Collected 3
+Collect finished.
+
+Calling collect again...
+Flow started // Flow 重新开始执行
+Emitting 1
+Collected again 1
+Emitting 2
+Collected again 2
+Emitting 3
+Collected again 3
+Second collect finished.</code></pre></div>
+<p><strong>2. 使用 <code>flowOf(...)</code></strong></p>
+<p>用于从固定数量的值创建 Flow。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-kotlin">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="k">import</span> <span class="nn">kotlinx.coroutines.flow.flowOf</span>
+</span></span><span class="line"><span class="cl"><span class="k">import</span> <span class="nn">kotlinx.coroutines.flow.collect</span>
+</span></span><span class="line"><span class="cl"><span class="k">import</span> <span class="nn">kotlinx.coroutines.runBlocking</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">fun</span> <span class="nf">main</span><span class="p">()</span> <span class="p">=</span> <span class="n">runBlocking</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">flowOf</span><span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">3</span><span class="p">,</span> <span class="s2">&#34;four&#34;</span><span class="p">,</span> <span class="s2">&#34;five&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="n">collect</span> <span class="p">{</span> <span class="k">value</span> <span class="o">-&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">println</span><span class="p">(</span><span class="s2">&#34;Collected: </span><span class="si">$value</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p><strong>3. 使用 <code>.asFlow()</code> 扩展函数</strong></p>
+<p>可以将集合、序列、范围等转换为 Flow。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-kotlin">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="k">import</span> <span class="nn">kotlinx.coroutines.flow.asFlow</span>
+</span></span><span class="line"><span class="cl"><span class="k">import</span> <span class="nn">kotlinx.coroutines.flow.collect</span>
+</span></span><span class="line"><span class="cl"><span class="k">import</span> <span class="nn">kotlinx.coroutines.runBlocking</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">fun</span> <span class="nf">main</span><span class="p">()</span> <span class="p">=</span> <span class="n">runBlocking</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 从 List 创建
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">listOf</span><span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">3</span><span class="p">).</span><span class="n">asFlow</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="n">collect</span> <span class="p">{</span> <span class="n">println</span><span class="p">(</span><span class="s2">&#34;From List: </span><span class="si">$it</span><span class="s2">&#34;</span><span class="p">)</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">println</span><span class="p">(</span><span class="s2">&#34;---&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 从 IntRange 创建
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">(</span><span class="m">1.</span><span class="p">.</span><span class="m">5</span><span class="p">).</span><span class="n">asFlow</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="n">collect</span> <span class="p">{</span> <span class="n">println</span><span class="p">(</span><span class="s2">&#34;From Range: </span><span class="si">$it</span><span class="s2">&#34;</span><span class="p">)</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<h2 id="消费-flow-使用末端操作符">消费 Flow (使用末端操作符)</h2>
+<p>Flow 需要通过<strong>末端操作符</strong>来消费。最常见的末端操作符是 <code>collect</code>。</p>
+<ul>
+<li><strong><code>collect { value -&gt; ... }</code></strong>：这是一个挂起函数，它会启动 Flow 的执行，并对每个发出的值执行给定的 lambda 表达式。</li>
+</ul>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-kotlin">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="k">import</span> <span class="nn">kotlinx.coroutines.flow.*</span>
+</span></span><span class="line"><span class="cl"><span class="k">import</span> <span class="nn">kotlinx.coroutines.runBlocking</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">fun</span> <span class="nf">main</span><span class="p">()</span> <span class="p">=</span> <span class="n">runBlocking</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="p">(</span><span class="m">1.</span><span class="p">.</span><span class="m">5</span><span class="p">).</span><span class="n">asFlow</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="n">filter</span> <span class="p">{</span> <span class="k">it</span> <span class="p">%</span> <span class="m">2</span> <span class="o">==</span> <span class="m">0</span> <span class="p">}</span> <span class="c1">// 中间操作符：只保留偶数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="p">.</span><span class="n">map</span> <span class="p">{</span> <span class="s2">&#34;Value: </span><span class="si">$it</span><span class="s2">&#34;</span> <span class="p">}</span> <span class="c1">// 中间操作符：转换为字符串
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="p">.</span><span class="n">collect</span> <span class="p">{</span> <span class="c1">// 末端操作符：触发执行并打印
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">println</span><span class="p">(</span><span class="k">it</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p><strong>输出:</strong></p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><pre tabindex="0"><code>Value: 2
+Value: 4</code></pre></div>
+<h2 id="flow-是冷的-cold-streams">Flow 是冷的 (Cold Streams)</h2>
+<p>如前所述，Flow 是冷的。这意味着：</p>
+<ul>
+<li>Flow 构建块 (<code>flow { ... }</code>) 或中间操作符（如 <code>map</code>, <code>filter</code>）本身不执行任何操作。</li>
+<li>只有当调用末端操作符（如 <code>collect</code>）时，Flow 才开始执行其生产者逻辑。</li>
+<li>每次调用末端操作符都会<strong>重新</strong>执行整个 Flow 链（除非使用了 <code>shareIn</code> 或 <code>stateIn</code> 转换为热流，但这超出了快速入门的范围）。</li>
+</ul>
+<h2 id="常用操作符示例">常用操作符示例</h2>
+<p>Flow 提供了丰富的操作符来处理数据流。</p>
+<ul>
+<li><strong><code>map</code></strong>: 转换每个元素。</li>
+<li><strong><code>filter</code></strong>: 过滤满足条件的元素。</li>
+<li><strong><code>onEach</code></strong>: 对每个元素执行一个副作用（如打印日志），不改变元素本身。</li>
+<li><strong><code>take</code></strong>: 只取前 N 个元素。</li>
+<li><strong><code>zip</code></strong>: 将两个 Flow 的元素按顺序配对。</li>
+<li><strong><code>flatMapConcat</code> / <code>flatMapMerge</code> / <code>flatMapLatest</code></strong>: 将每个元素映射到一个新的 Flow，并将这些 Flow 合并。</li>
+</ul>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-kotlin">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="k">import</span> <span class="nn">kotlinx.coroutines.delay</span>
+</span></span><span class="line"><span class="cl"><span class="k">import</span> <span class="nn">kotlinx.coroutines.flow.*</span>
+</span></span><span class="line"><span class="cl"><span class="k">import</span> <span class="nn">kotlinx.coroutines.runBlocking</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">fun</span> <span class="nf">main</span><span class="p">()</span> <span class="p">=</span> <span class="n">runBlocking</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="p">(</span><span class="m">1.</span><span class="p">.</span><span class="m">5</span><span class="p">).</span><span class="n">asFlow</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="n">onEach</span> <span class="p">{</span> <span class="n">delay</span><span class="p">(</span><span class="m">50</span><span class="p">)</span> <span class="p">}</span> <span class="c1">// 模拟处理延迟
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="p">.</span><span class="n">filter</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">println</span><span class="p">(</span><span class="s2">&#34;Filtering </span><span class="si">$it</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="k">it</span> <span class="p">&gt;</span> <span class="m">2</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="n">map</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">println</span><span class="p">(</span><span class="s2">&#34;Mapping </span><span class="si">$it</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;Mapped: </span><span class="si">$it</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="n">take</span><span class="p">(</span><span class="m">2</span><span class="p">)</span> <span class="c1">// 只取转换后的前两个结果
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="p">.</span><span class="n">collect</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">println</span><span class="p">(</span><span class="s2">&#34;Collected </span><span class="si">$it</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p><strong>输出 (大致顺序，delay 会影响精确时序):</strong></p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><pre tabindex="0"><code>Filtering 1
+Filtering 2
+Filtering 3
+Mapping 3
+Collected Mapped: 3
+Filtering 4
+Mapping 4
+Collected Mapped: 4</code></pre></div>
+<p>(注意：因为 <code>take(2)</code>，一旦收集到两个元素，Flow 就会停止，所以 5 不会被处理。)</p>
+<h2 id="异常处理">异常处理</h2>
+<p>使用 <code>catch</code> 操作符来捕获上游 Flow 中发生的异常。<code>catch</code> 只能捕获其<strong>上游</strong>的异常。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-kotlin">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="k">import</span> <span class="nn">kotlinx.coroutines.flow.*</span>
+</span></span><span class="line"><span class="cl"><span class="k">import</span> <span class="nn">kotlinx.coroutines.runBlocking</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">fun</span> <span class="nf">failingFlow</span><span class="p">():</span> <span class="n">Flow</span><span class="p">&lt;</span><span class="n">Int</span><span class="p">&gt;</span> <span class="p">=</span> <span class="n">flow</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">emit</span><span class="p">(</span><span class="m">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">emit</span><span class="p">(</span><span class="m">2</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">throw</span> <span class="n">RuntimeException</span><span class="p">(</span><span class="s2">&#34;Something went wrong!&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// emit(3) // 这行不会执行
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">fun</span> <span class="nf">main</span><span class="p">()</span> <span class="p">=</span> <span class="n">runBlocking</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">failingFlow</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="n">map</span> <span class="p">{</span> <span class="s2">&#34;Value: </span><span class="si">$it</span><span class="s2">&#34;</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="k">catch</span> <span class="p">{</span> <span class="n">e</span> <span class="o">-&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">println</span><span class="p">(</span><span class="s2">&#34;Caught exception: </span><span class="si">${e.message}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">// 可以选择发出一个默认值
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">emit</span><span class="p">(</span><span class="s2">&#34;Error occurred&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="n">collect</span> <span class="p">{</span> <span class="n">println</span><span class="p">(</span><span class="k">it</span><span class="p">)</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p><strong>输出:</strong></p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><pre tabindex="0"><code>Value: 1
+Value: 2
+Caught exception: Something went wrong!
+Error occurred</code></pre></div>
+<h2 id="完成处理">完成处理</h2>
+<p>使用 <code>onCompletion</code> 操作符来指定当 Flow 完成（无论是正常完成还是因异常完成）时执行的操作。它通常用于资源清理。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-kotlin">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="k">import</span> <span class="nn">kotlinx.coroutines.flow.*</span>
+</span></span><span class="line"><span class="cl"><span class="k">import</span> <span class="nn">kotlinx.coroutines.runBlocking</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">fun</span> <span class="nf">main</span><span class="p">()</span> <span class="p">=</span> <span class="n">runBlocking</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="p">(</span><span class="m">1.</span><span class="p">.</span><span class="m">3</span><span class="p">).</span><span class="n">asFlow</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="n">onCompletion</span> <span class="p">{</span> <span class="n">cause</span> <span class="o">-&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="n">cause</span> <span class="o">==</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="n">println</span><span class="p">(</span><span class="s2">&#34;Flow completed successfully&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="n">println</span><span class="p">(</span><span class="s2">&#34;Flow completed with exception: </span><span class="si">${cause.message}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="n">collect</span> <span class="p">{</span> <span class="n">println</span><span class="p">(</span><span class="s2">&#34;Collected </span><span class="si">$it</span><span class="s2">&#34;</span><span class="p">)</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">println</span><span class="p">(</span><span class="s2">&#34;---&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 示例：带异常的 Flow
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">failingFlow</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="k">catch</span> <span class="p">{</span> <span class="cm">/* 捕获异常以防止崩溃，但 onCompletion 仍然会收到 cause */</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="n">onCompletion</span> <span class="p">{</span> <span class="n">cause</span> <span class="o">-&gt;</span>
+</span></span><span class="line"><span class="cl">             <span class="k">if</span> <span class="p">(</span><span class="n">cause</span> <span class="o">==</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="n">println</span><span class="p">(</span><span class="s2">&#34;Flow completed successfully&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="c1">// 注意：这里的 cause 是 catch 操作符处理之前的原始异常
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                <span class="n">println</span><span class="p">(</span><span class="s2">&#34;Flow completed with exception: </span><span class="si">${cause.message}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="n">collect</span> <span class="p">{</span> <span class="n">println</span><span class="p">(</span><span class="s2">&#34;Collected </span><span class="si">$it</span><span class="s2">&#34;</span><span class="p">)</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p><strong>输出:</strong></p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><pre tabindex="0"><code>Collected 1
+Collected 2
+Collected 3
+Flow completed successfully
+---
+Collected 1
+Collected 2
+Flow completed with exception: Something went wrong!</code></pre></div>
+<h2 id="切换上下文-context-switching">切换上下文 (Context Switching)</h2>
+<p>默认情况下，Flow 的生产者代码运行在收集者所在的协程上下文中。可以使用 <code>flowOn()</code> 操作符来改变<strong>上游</strong>操作（包括 <code>flow</code> 构建块和之前的中间操作符）执行的 <code>CoroutineDispatcher</code>。</p>
+<p>这对于将 CPU 密集型或 IO 密集型操作切换到合适的线程池非常有用。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-kotlin">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="k">import</span> <span class="nn">kotlinx.coroutines.*</span>
+</span></span><span class="line"><span class="cl"><span class="k">import</span> <span class="nn">kotlinx.coroutines.flow.*</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">fun</span> <span class="nf">log</span><span class="p">(</span><span class="n">msg</span><span class="p">:</span> <span class="n">String</span><span class="p">)</span> <span class="p">=</span> <span class="n">println</span><span class="p">(</span><span class="s2">&#34;[</span><span class="si">${Thread.currentThread().name}</span><span class="s2">] </span><span class="si">$msg</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">fun</span> <span class="nf">simpleContextFlow</span><span class="p">():</span> <span class="n">Flow</span><span class="p">&lt;</span><span class="n">Int</span><span class="p">&gt;</span> <span class="p">=</span> <span class="n">flow</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">log</span><span class="p">(</span><span class="s2">&#34;Flow started&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="k">in</span> <span class="m">1.</span><span class="p">.</span><span class="m">3</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">delay</span><span class="p">(</span><span class="m">100</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">log</span><span class="p">(</span><span class="s2">&#34;Emitting </span><span class="si">$i</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">emit</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}.</span><span class="n">flowOn</span><span class="p">(</span><span class="nc">Dispatchers</span><span class="p">.</span><span class="n">IO</span><span class="p">)</span> <span class="c1">// &lt;&lt;&lt; 改变 flow 构建块的执行上下文
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="k">fun</span> <span class="nf">main</span><span class="p">()</span> <span class="p">=</span> <span class="n">runBlocking</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">log</span><span class="p">(</span><span class="s2">&#34;Starting collection&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">simpleContextFlow</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="n">map</span> <span class="p">{</span> <span class="c1">// 这个 map 仍然在下游 (收集者) 的上下文中执行
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">log</span><span class="p">(</span><span class="s2">&#34;Mapping </span><span class="si">$it</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="k">it</span> <span class="p">*</span> <span class="m">2</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// .flowOn(Dispatchers.Default) // 如果需要，可以再次切换 map 的上下文
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="p">.</span><span class="n">collect</span> <span class="p">{</span> <span class="c1">// collect 运行在 runBlocking 的上下文中 (通常是 main 线程)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">log</span><span class="p">(</span><span class="s2">&#34;Collected </span><span class="si">$it</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">log</span><span class="p">(</span><span class="s2">&#34;Collection finished&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p><strong>输出 (线程名可能不同):</strong></p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><pre tabindex="0"><code>[main @coroutine#1] Starting collection
+[DefaultDispatcher-worker-1 @coroutine#2] Flow started  // &lt;&lt;&lt; 在 IO 线程池
+[DefaultDispatcher-worker-1 @coroutine#2] Emitting 1
+[main @coroutine#1] Mapping 1                      // &lt;&lt;&lt; map 在 main 线程
+[main @coroutine#1] Collected 2                    // &lt;&lt;&lt; collect 在 main 线程
+[DefaultDispatcher-worker-1 @coroutine#2] Emitting 2
+[main @coroutine#1] Mapping 2
+[main @coroutine#1] Collected 4
+[DefaultDispatcher-worker-1 @coroutine#2] Emitting 3
+[main @coroutine#1] Mapping 3
+[main @coroutine#1] Collected 6
+[main @coroutine#1] Collection finished</code></pre></div>
+<h2 id="总结">总结</h2>
+<p>Kotlin Flow 是处理异步数据流的强大工具。本快速入门介绍了：</p>
+<ul>
+<li>Flow 的基本概念：异步、冷流。</li>
+<li>如何创建 Flow (<code>flow</code>, <code>flowOf</code>, <code>asFlow</code>)。</li>
+<li>如何使用末端操作符消费 Flow (<code>collect</code>)。</li>
+<li>常用的中间操作符 (<code>map</code>, <code>filter</code>)。</li>
+<li>异常处理 (<code>catch</code>) 和完成处理 (<code>onCompletion</code>)。</li>
+<li>使用 <code>flowOn</code> 进行上下文切换。</li>
+</ul>
+<p>这只是 Flow 功能的冰山一角。深入学习可以探索更多高级操作符、缓冲策略、热流 (<code>SharedFlow</code>, <code>StateFlow</code>) 以及它们在 Android 开发等场景中的应用。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><pre tabindex="0"><code>
+
+
+</code></pre></div>]]></description>
+</item>
+</channel>
 </rss>

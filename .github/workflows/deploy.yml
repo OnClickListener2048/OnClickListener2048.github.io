@@ -2,9 +2,9 @@ name: Deploy Hugo site to Pages
 
 on:
   # 在针对默认分支的推送上运行
-  # push:
-  #   branches:
-  #     - master  # 或者你的默认分支名，比如 master
+  push:
+    branches:
+      - master  # 或者你的默认分支名，比如 master
 
   # 允许你从 Actions 选项卡手动运行此工作流程
   workflow_dispatch:
