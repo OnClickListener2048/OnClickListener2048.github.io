@@ -1,64 +1,22 @@
 ---
+weight: 1
 title: "Kotlin Flow 快速入门"
-subtitle: ""
-date: 2025-04-10T23:36:35+08:00
-lastmod: 2025-04-10T23:36:35+08:00
+date: 2019-10-01T17:55:28+08:00
+lastmod: 2019-10-01T17:55:28+08:00
 draft: false
-author: ""
-authorLink: ""
-description: ""
-license: ""
+author: "Watson"
+authorLink: "https://dillonzq.com"
+description: "Kotlin Flow 是 Kotlin 协程库提供的一种用于处理**异步数据流**的类型。"
 images: []
-
-tags: []
-categories: ["Kotlin"]
-
-featuredImage: "flow.webp"
-featuredImagePreview: "flow.webp"
 resources:
-  - name: "flow"
-    src: "flow.webp"
+  - name: "featured-image"
+    src: "featured-image.webp"
 
-hiddenFromHomePage: false
-hiddenFromSearch: false
+tags: ["emoji"]
+categories: ["Markdown"]
+
 twemoji: false
 lightgallery: true
-ruby: true
-fraction: true
-fontawesome: true
-linkToMarkdown: true
-rssFullText: false
-
-toc:
-  auto: false
-code:
-  copy: true
-  maxShownLines: 50
-math:
-  enable: false
-  # ...
-mapbox:
-  # ...
-share:
-  enable: true
-  # ...
-comment:
-  enable: true
-  # ...
-library:
-  css:
-    # someCSS = "some.css"
-    # located in "assets/"
-    # Or
-    # someCSS = "https://cdn.example.com/some.css"
-  js:
-    # someJS = "some.js"
-    # located in "assets/"
-    # Or
-    # someJS = "https://cdn.example.com/some.js"
-seo:
-  images: []
-  # ...
 ---
 
 ```markdown

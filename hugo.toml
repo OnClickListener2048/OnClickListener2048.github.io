@@ -1,7 +1,10 @@
 baseURL = 'https://onclicklistener2048.github.io/'
-languageCode = 'zh-cn'
 title = 'OnClickListener2048 Study Notes'
 theme = 'loveit'
+defaultContentLanguage = 'zh'
+# themes directory
+# 主题目录
+themesDir = "themes/"
 
 [params]
   # site default theme ["auto", "light", "dark"]
