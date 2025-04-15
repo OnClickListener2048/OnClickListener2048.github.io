@@ -55,7 +55,7 @@ themesDir = "themes/"
       logo = ""
       # title name
       # 标题名称
-      name = "Watson Wang's Blog"
+      name = "OnClickListener2048学习日记"
       # you can add extra information before the name (HTML format is supported), such as icons
       # 你可以在名称 (允许 HTML 格式) 之前添加其他信息, 例如图标
       pre = ""
