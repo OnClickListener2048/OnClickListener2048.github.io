@@ -34,7 +34,7 @@ draft: false # Set to false to publish
 
 `HashMap` 内部维护了一个 **`Node<K,V>[] table`** 数组，这是其主体结构，也常被称为“桶”（bucket）数组。每个桶（数组元素）可以存放一个 `Node` 节点，或者是一条 `Node` 组成的链表，或者是一棵红黑树（`TreeNode`）。
 
-{{< figure src="/images/hashmap-structure.png" title="HashMap 内部结构示意图 (JDK 8+)" width="80%" >}}
+{{< figure src="featured-image.jpg" title="HashMap 内部结构示意图 (JDK 8+)" width="80%" >}}
 <!-- 你需要将上面这行替换为你自己的图片路径，或者删除它 -->
 <!-- 图片示意：一个数组，部分索引为null，部分索引指向单个Node，部分索引指向链表，部分索引指向红黑树 -->
 
