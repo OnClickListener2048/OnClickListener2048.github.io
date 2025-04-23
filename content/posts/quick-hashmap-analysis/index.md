@@ -4,6 +4,7 @@ date: 2023-10-27T10:00:00+08:00
 lastmod: 2023-10-27T10:00:00+08:00
 author: "OnClickListener" # Change to your name
 # authorLink: "Your Link" # Optional: Link to your profile
+weight: 1
 description: "快速理解 Java HashMap 的核心工作原理，包括数据结构、put/get 流程、哈希冲突处理和扩容机制，辅以关键源码片段。"
 # license: "" # Optional: Specify a license
 resources:

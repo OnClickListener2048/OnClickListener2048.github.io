@@ -3,6 +3,7 @@ title: "Java 并发编程之锁：从 Synchronized 到 ReentrantLock，再探乐
 date: 2025-01-25T14:00:00+08:00 # 修改为实际日期
 lastmod: 2025-01-25T14:00:00+08:00 # 修改为实际日期
 author: "OnClickListener" # 修改为你的名字
+weight: 1
 # authorLink: "Your Link" # 可选：你的个人链接
 description: "深入理解 Java 中锁的核心概念，详细对比 Synchronized 与 ReentrantLock，并解析悲观锁、乐观锁、公平锁与非公平锁的原理与区别。"
 # license: "" # 可选：指定许可证

@@ -3,6 +3,7 @@ title: "深入解析：Android App 冷启动全流程（从点击图标到界面
 date: 2024-10-27T11:00:00+08:00 # 修改为实际日期
 lastmod: 2024-10-27T11:00:00+08:00 # 修改为实际日期
 author: "OnClickListener" # 修改为你的名字
+weight: 1
 # authorLink: "Your Link" # 可选：你的个人链接
 description: "详细剖析 Android 应用冷启动的每一个环节，从 Launcher 事件到 AMS/ATMS 调度、Zygote 进程创建、应用初始化、Activity 启动直至最终界面渲染和显示。"
 # license: "" # 可选：指定许可证

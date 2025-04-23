@@ -3,6 +3,7 @@ title: "揭秘 Kotlin 协程：挂起与恢复的魔法是如何实现的？"
 date: 2024-10-27T15:00:00+08:00 # 修改为实际日期
 lastmod: 2024-10-27T15:00:00+08:00 # 修改为实际日期
 author: "OnClickListener" # 修改为你的名字
+weight: 1
 # authorLink: "Your Link" # 可选：你的个人链接
 description: "深入探讨 Android Kotlin 协程的实现原理，解释 suspend 关键字背后的编译时魔法、状态机生成、Continuation 的作用，以及协程如何实现非阻塞式挂起和恢复执行。"
 # license: "" # 可选：指定许可证

@@ -7,6 +7,7 @@ author: "OnClickListener" # 作者名 (可选)
 # description: "对 idb (iOS Debug Bridge) 工具的详细介绍，包括其功能、用途和目标用户。" # 文章描述 (可选，LoveIt会自动截取摘要)
 # license: "" # 版权信息 (可选)
 # resources: # (可选)
+weight: 1
 resources:
   - name: "featured-image"
     src: "featured-image.jpg"
