@@ -103,7 +103,7 @@ themesDir = "themes/"
     dateFormat = "01-02"
     # amount of RSS pages
     # RSS 文章数目
-    rss = 10
+    rss = 20
 
   # List (category or tag) page config
   # List (目录或标签) 页面配置
