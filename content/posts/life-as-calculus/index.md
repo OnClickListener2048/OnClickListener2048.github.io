@@ -3,6 +3,7 @@ title: "人生的微积分：用每一刻的态度，积分成你想要的生活
 date: 2024-10-27T10:00:00+08:00
 draft: false
 # description: "探讨人生如同微积分，强调每一刻态度和选择的累积效应。" # 可选
+author: "OnClickListener" # 修改为你的名字
 tags: ["人生感悟", "哲学思考", "个人成长", "心态"]
 categories: ["生活随笔"]
 weight: 1
