@@ -1,7 +1,7 @@
 ---
 title: "深入解析：Android App 冷启动全流程（从点击图标到界面显示）"
 date: 2024-08-27T11:00:00+08:00 # 修改为实际日期
-lastmod: 2024-10-27T11:00:00+08:00 # 修改为实际日期
+lastmod: 2024-08-27T11:00:00+08:00 # 修改为实际日期
 author: "OnClickListener" # 修改为你的名字
 weight: 1
 # authorLink: "Your Link" # 可选：你的个人链接

@@ -1,7 +1,7 @@
 ---
 title: "深入了解 Facebook (Meta) 的 idb (iOS Debug Bridge)" # 文章标题
-date: 2023-06-20T10:00:00+08:00 # 文章创建日期 (请修改为实际日期)
-lastmod: 2023-10-27T10:00:00+08:00 # 最后修改日期 (请修改为实际日期)
+date: 2022-06-20T10:00:00+08:00 # 文章创建日期 (请修改为实际日期)
+lastmod: 2022-06-20T10:00:00+08:00 # 最后修改日期 (请修改为实际日期)
 author: "OnClickListener" # 作者名 (可选)
 # authorLink: "你的网站或社交链接" # 作者链接 (可选)
 # description: "对 idb (iOS Debug Bridge) 工具的详细介绍，包括其功能、用途和目标用户。" # 文章描述 (可选，LoveIt会自动截取摘要)
