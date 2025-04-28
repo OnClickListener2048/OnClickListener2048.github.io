@@ -1,6 +1,6 @@
 ---
 title: "深入理解 LeakCanary：自动检测 Android 内存泄漏的原理"
-date: 2024-10-27T10:00:00+08:00
+date: 2024-08-18T10:00:00+08:00
 draft: false
 author: "OnClickListener"
 weight: 1
